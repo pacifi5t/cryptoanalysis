@@ -5,7 +5,11 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-export function question(prompt) {
+/**
+ * @param {string} prompt
+ * @returns {Promise<string>} typed message
+ */
+export async function question(prompt) {
   return new Promise((resolve, _) => {
     rl.question(prompt ?? "", resolve);
   });
