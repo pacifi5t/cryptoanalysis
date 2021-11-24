@@ -8,7 +8,7 @@ const compatibilityTable = parseCompatTable(language);
 export async function decrypt() {
   const encrypted = await question("Enter encrypted message: ");
   const matrixSizes = getMatrixSizes(encrypted.length);
-
+  // console.log(matrixSizes);
   for (const size of matrixSizes) {
     //TODO: try different combinations of columns
     const matrix = mapEncryptedToMatrix(encrypted, size);
@@ -17,7 +17,7 @@ export async function decrypt() {
     for (let i = 0; i < matrix[0].length; i++) {
       columnPermuations = columnPermuations.concat(getPermuasions(i, matrix));
     }
-    // console.log(columnPermuations, columnPermuations.length);
+    // console.log(columnPermuations.length);
     const possibleDecryptionMatrices = [];
     for (const perm of columnPermuations) {
       const dMatrix = [];
@@ -27,7 +27,15 @@ export async function decrypt() {
           dMatrix[i].push(matrix[i][col]);
         }
       }
+
       // console.log(dMatrix);
+      let ostr = "";
+      for (let i = 0; i < dMatrix.length; i++) {
+        for (let j = 0; j < dMatrix[i].length; j++) {
+          ostr += dMatrix[i][j];
+        }
+      }
+      console.log(ostr, size, perm);
     }
   }
 }
@@ -43,7 +51,7 @@ function parseCompatTable(lang) {
 
   for (const each of content) {
     const char = each.split(" ");
-    charMap.set(char[0], [char[1] + "_", char[2] + "_"]);
+    charMap.set(char[0], [char[1], char[2]]);
   }
   return charMap;
 }
