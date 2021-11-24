@@ -8,18 +8,20 @@ const compatibilityTable = parseCompatTable(language);
 export async function decrypt() {
   const encrypted = await question("Enter encrypted message: ");
   const matrixSizes = getMatrixSizes(encrypted.length);
-  // console.log(matrixSizes);
+  const results = [];
+  let totalPermutations = 0;
+
   for (const size of matrixSizes) {
-    //TODO: try different combinations of columns
     const matrix = mapEncryptedToMatrix(encrypted, size);
-    let columnPermuations = [];
+    let columnPermutations = [];
 
     for (let i = 0; i < matrix[0].length; i++) {
-      columnPermuations = columnPermuations.concat(getPermuasions(i, matrix));
+      columnPermutations = columnPermutations.concat(
+        getPermutations(i, matrix)
+      );
     }
-    // console.log(columnPermuations.length);
-    const possibleDecryptionMatrices = [];
-    for (const perm of columnPermuations) {
+
+    for (const perm of columnPermutations) {
       const dMatrix = [];
       for (let i = 0; i < size[0]; i++) {
         dMatrix.push([]);
@@ -28,15 +30,21 @@ export async function decrypt() {
         }
       }
 
-      // console.log(dMatrix);
-      let ostr = "";
+      let decrypted = "";
       for (let i = 0; i < dMatrix.length; i++) {
         for (let j = 0; j < dMatrix[i].length; j++) {
-          ostr += dMatrix[i][j];
+          decrypted += dMatrix[i][j];
         }
       }
-      console.log(ostr, size, perm);
+      results.push([decrypted, size, perm]);
     }
+    totalPermutations += columnPermutations.length;
+  }
+
+  console.log("Matrix sizes:", matrixSizes);
+  console.log("Total permutations:", totalPermutations);
+  for (const each of results) {
+    console.log(each[0], each[1], each[2]);
   }
 }
 
@@ -65,7 +73,7 @@ function getMatrixSizes(encryptedLength) {
   for (let i = 2; ; i++) {
     const result = encryptedLength / i;
     if (result < i) {
-      //TODO: add check if result is prime number
+      //If result is prime number the loop also should end
       break;
     }
     if (Number.isInteger(result)) {
@@ -91,7 +99,7 @@ function mapEncryptedToMatrix(encrypted, matrixSizes) {
   return matrix;
 }
 
-function getPermuasions(begin, matrix) {
+function getPermutations(begin, matrix) {
   const maxLen = matrix[0].length;
   const orders = [];
 
