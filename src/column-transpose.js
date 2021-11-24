@@ -99,13 +99,18 @@ function mapEncryptedToMatrix(encrypted, matrixSizes) {
   return matrix;
 }
 
+/**
+ * @param {number} begin
+ * @param {string[][]} matrix
+ * @returns {any[]} array of permutations that are very likely to be a solution
+ */
 function getPermutations(begin, matrix) {
   const maxLen = matrix[0].length;
-  const orders = [];
+  const permutations = [];
 
   function next(order) {
     if (order.length === maxLen) {
-      orders.push(order);
+      permutations.push(order);
     }
     for (let i = 0; i < maxLen; i++) {
       const current = matrix[0][order[order.length - 1]];
@@ -117,9 +122,14 @@ function getPermutations(begin, matrix) {
   }
 
   next([begin]);
-  return orders;
+  return permutations;
 }
 
+/**
+ * @param {string} a
+ * @param {string} b
+ * @returns {boolean} true if symbols are compatible, else false
+ */
 function symbolsAreCompatible(a, b) {
   return (
     compatibilityTable.get(a)[1].includes(b) ||
