@@ -12,6 +12,12 @@ export async function decrypt() {
   for (const each of matrixSizes) {
     //TODO: try different combinations of columns
     const matrix = mapEncryptedToMatrix(encrypted, each);
+    let columnPermuations = [];
+
+    for (let i = 0; i < matrix[0].length; i++) {
+      columnPermuations = columnPermuations.concat(getPermuasions(i, matrix));
+    }
+    //TODO: finish message decryption
   }
 }
 
@@ -26,7 +32,7 @@ function parseCompatTable(lang) {
 
   for (const each of content) {
     const char = each.split(" ");
-    charMap.set(char[0], char[1]);
+    charMap.set(char[0], char[1] + "_");
   }
   return charMap;
 }
@@ -52,6 +58,7 @@ function getMatrixSizes(encryptedLength) {
 /**
  * @param {string} encrypted
  * @param {[number, number]} matrixSizes
+ * @returns {string[][]} matrix of symbols
  */
 function mapEncryptedToMatrix(encrypted, matrixSizes) {
   const rows = matrixSizes[0];
@@ -62,4 +69,28 @@ function mapEncryptedToMatrix(encrypted, matrixSizes) {
     matrix.push(encrypted.slice(i * cols, i * cols + cols).split(""));
   }
   return matrix;
+}
+
+function getPermuasions(begin, matrix) {
+  const maxLen = matrix[0].length;
+  const orders = [];
+
+  function next(order) {
+    if (order.length === maxLen) {
+      orders.push(order);
+    }
+    for (let i = 0; i < maxLen; i++) {
+      const current = matrix[0][maxLen - 1];
+      const following = matrix[0][i];
+      if (
+        !order.includes(i) &&
+        compatibilityTable.get(current).includes(following)
+      ) {
+        next([...order, i]);
+      }
+    }
+  }
+
+  next([begin]);
+  return orders;
 }
