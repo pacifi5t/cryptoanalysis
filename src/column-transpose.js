@@ -11,26 +11,14 @@ export async function decrypt() {
 
   for (const each of matrixSizes) {
     //TODO: try different combinations of columns
+    const matrix = mapEncryptedToMatrix(encrypted, each);
   }
 }
 
-export function getMatrixSizes(encryptedLength) {
-  const sizes = [];
-
-  for (let i = 2; ; i++) {
-    const result = encryptedLength / i;
-
-    if (result < i) {
-      break;
-    }
-
-    if (Number.isInteger(result)) {
-      sizes.push([result, i]);
-    }
-  }
-  return sizes;
-}
-
+/**
+ * @param {string} lang
+ * @returns {Map<string,string>} sizes of matrix
+ */
 function parseCompatTable(lang) {
   const filePath = resolve(`./compat-tables/${lang}.txt`);
   const content = readFileSync(filePath, { encoding: "utf-8" }).split("\n");
@@ -40,6 +28,38 @@ function parseCompatTable(lang) {
     const char = each.split(" ");
     charMap.set(char[0], char[1]);
   }
-  console.log(charMap);
   return charMap;
+}
+
+/**
+ * @param {number} encryptedLength
+ * @returns {[number,number]} sizes of matrix
+ */
+function getMatrixSizes(encryptedLength) {
+  const sizes = [];
+  for (let i = 2; ; i++) {
+    const result = encryptedLength / i;
+    if (result < i) {
+      break;
+    }
+    if (Number.isInteger(result)) {
+      sizes.push([result, i]);
+    }
+  }
+  return sizes;
+}
+
+/**
+ * @param {string} encrypted
+ * @param {[number, number]} matrixSizes
+ */
+function mapEncryptedToMatrix(encrypted, matrixSizes) {
+  const rows = matrixSizes[0];
+  const cols = matrixSizes[1];
+
+  const matrix = [];
+  for (let i = 0; i < rows; i++) {
+    matrix.push(encrypted.slice(i * cols, i * cols + cols).split(""));
+  }
+  return matrix;
 }
