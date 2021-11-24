@@ -10,8 +10,9 @@
                 "${workspaceFolder}/node_modules/**"
             ],
             "runtimeArgs": [
-                "${workspaceFolder}/index.js"
-            ]
+                "${workspaceFolder}/src/index.js"
+            ],
+            "console": "integratedTerminal"
         },
         {
             "type": "node",
