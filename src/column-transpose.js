@@ -17,7 +17,7 @@ export async function decrypt() {
     for (let i = 0; i < matrix[0].length; i++) {
       columnPermuations = columnPermuations.concat(getPermuasions(i, matrix));
     }
-    // console.log(columnPermuations);
+    // console.log(columnPermuations, columnPermuations.length);
     const possibleDecryptionMatrices = [];
     for (const perm of columnPermuations) {
       const dMatrix = [];
@@ -34,7 +34,7 @@ export async function decrypt() {
 
 /**
  * @param {string} lang
- * @returns {Map<string,string>} sizes of matrix
+ * @returns {Map<string, [string, string]>} sizes of matrix
  */
 function parseCompatTable(lang) {
   const filePath = resolve(`./compat-tables/${lang}.txt`);
@@ -43,7 +43,7 @@ function parseCompatTable(lang) {
 
   for (const each of content) {
     const char = each.split(" ");
-    charMap.set(char[0], char[1] + "_");
+    charMap.set(char[0], [char[1] + "_", char[2] + "_"]);
   }
   return charMap;
 }
@@ -57,6 +57,7 @@ function getMatrixSizes(encryptedLength) {
   for (let i = 2; ; i++) {
     const result = encryptedLength / i;
     if (result < i) {
+      //TODO: add check if result is prime number
       break;
     }
     if (Number.isInteger(result)) {
@@ -93,10 +94,7 @@ function getPermuasions(begin, matrix) {
     for (let i = 0; i < maxLen; i++) {
       const current = matrix[0][order[order.length - 1]];
       const following = matrix[0][i];
-      if (
-        !order.includes(i) &&
-        compatibilityTable.get(current).includes(following)
-      ) {
+      if (!order.includes(i) && symbolsAreCompatible(current, following)) {
         next([...order, i]);
       }
     }
@@ -104,4 +102,11 @@ function getPermuasions(begin, matrix) {
 
   next([begin]);
   return orders;
+}
+
+function symbolsAreCompatible(a, b) {
+  return (
+    compatibilityTable.get(a)[1].includes(b) ||
+    compatibilityTable.get(b)[0].includes(a)
+  );
 }
