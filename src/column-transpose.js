@@ -9,15 +9,26 @@ export async function decrypt() {
   const encrypted = await question("Enter encrypted message: ");
   const matrixSizes = getMatrixSizes(encrypted.length);
 
-  for (const each of matrixSizes) {
+  for (const size of matrixSizes) {
     //TODO: try different combinations of columns
-    const matrix = mapEncryptedToMatrix(encrypted, each);
+    const matrix = mapEncryptedToMatrix(encrypted, size);
     let columnPermuations = [];
 
     for (let i = 0; i < matrix[0].length; i++) {
       columnPermuations = columnPermuations.concat(getPermuasions(i, matrix));
     }
-    //TODO: finish message decryption
+    // console.log(columnPermuations);
+    const possibleDecryptionMatrices = [];
+    for (const perm of columnPermuations) {
+      const dMatrix = [];
+      for (let i = 0; i < size[0]; i++) {
+        dMatrix.push([]);
+        for (const col of perm) {
+          dMatrix[i].push(matrix[i][col]);
+        }
+      }
+      // console.log(dMatrix);
+    }
   }
 }
 
@@ -39,7 +50,7 @@ function parseCompatTable(lang) {
 
 /**
  * @param {number} encryptedLength
- * @returns {[number,number]} sizes of matrix
+ * @returns {[number,number][]} sizes of matrix
  */
 function getMatrixSizes(encryptedLength) {
   const sizes = [];
@@ -80,7 +91,7 @@ function getPermuasions(begin, matrix) {
       orders.push(order);
     }
     for (let i = 0; i < maxLen; i++) {
-      const current = matrix[0][maxLen - 1];
+      const current = matrix[0][order[order.length - 1]];
       const following = matrix[0][i];
       if (
         !order.includes(i) &&
