@@ -1,5 +1,8 @@
+import { writeFileSync } from "fs";
 import { question } from "./io.js";
 import * as utils from "./utils.js";
+
+const filepath = "./output.txt";
 
 export async function decrypt() {
   const encrypted = await question("Enter encrypted message: ");
