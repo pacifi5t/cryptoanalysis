@@ -37,11 +37,16 @@ export async function decrypt() {
     totalPermutations += columnPermutations.length;
   }
 
-  console.log("Matrix sizes:", matrixSizes);
-  console.log("Total permutations:", totalPermutations);
-  for (const each of results) {
-    console.log(each[0], each[1], each[2]);
+  let output = "";
+  output += `Matrix sizes:`;
+  for (const each of matrixSizes) {
+    output += ` ${each[0]}x${each[1]}`;
   }
+  output += `\nTotal permutations: ${totalPermutations}\n`;
+  for (const each of results) {
+    output += `${each[0]} ${each[1][0]}x${each[1][1]} ${each[2]}\n`;
+  }
+  writeFileSync(filepath, output);
 }
 
 /**
