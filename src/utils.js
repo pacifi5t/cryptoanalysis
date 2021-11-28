@@ -63,7 +63,7 @@ function parseCompatTable(lang) {
 
   for (const each of content) {
     const char = each.split(" ");
-    charMap.set(char[0], [char[1], char[2]]);
+    charMap.set(char[0], [char[1] + "_,", char[2] + "_,"]);
   }
   return charMap;
 }
