@@ -1,9 +1,9 @@
 import { resolve } from "path";
 import { readFileSync } from "fs";
 
-export const compatibilityTable = parseCompatTable(language);
-
 const language = "ru";
+
+export const compatibilityTable = parseCompatTable(language);
 
 /**
  * @param {number} encryptedLength
