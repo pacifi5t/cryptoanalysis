@@ -1,5 +1,4 @@
 import { decrypt as decryptCT } from "./column-transpose.js";
-import { decrypt as decryptDT } from "./double-transpose.js";
 import { closeReadline, question } from "./io.js";
 
 async function main() {
@@ -12,9 +11,6 @@ async function main() {
   switch (num) {
     case 1:
       await decryptCT();
-      break;
-    case 2:
-      await decryptDT();
       break;
     default:
       break;
