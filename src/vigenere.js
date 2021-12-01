@@ -16,12 +16,12 @@ export async function decrypt() {
     for (let j = 0; j < alphabet.length; j++) {
       const mut = mutualIndex(columns[0], shiftColumn(columns[i], j));
       if (mut > 0.05 && mut < 0.07) {
+        console.log(`col = ${i}; s = ${j}`);
         offsets.push(j);
-        break;
       }
     }
   }
-  console.log(offsets);
+  // console.log(offsets);
 }
 
 function encryptedToMatrix(gcd) {
