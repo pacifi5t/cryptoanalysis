@@ -1,11 +1,11 @@
 import { decrypt as decryptCT } from "./column-transpose.js";
-import { cIndex, encryptedToMatrix } from "./vigener.js";
+import { decrypt as decryptV } from "./vigenere.js";
 import { closeReadline, question } from "./io.js";
 
 async function main() {
   console.log("Choose cipher");
   console.log("1 - Columnar transposition");
-  console.log("2 - Vigener");
+  console.log("2 - Vigenere");
 
   const num = parseInt(await question());
 
@@ -14,7 +14,7 @@ async function main() {
       await decryptCT();
       break;
     case 2:
-      cIndex(encryptedToMatrix(parseInt(await question("Enter GCD\n"))));
+      await decryptV();
       break;
     default:
       break;
