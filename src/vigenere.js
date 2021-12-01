@@ -10,6 +10,18 @@ export async function decrypt() {
   const gcd = parseInt(await question("Enter GCD: "));
   const matrix = encryptedToMatrix(gcd);
   const index = indexOfCoincidence(matrix);
+
+  const offsets = [];
+  for (let i = 1; i < columns.length; i++) {
+    for (let j = 0; j < alphabet.length; j++) {
+      const mut = mutualIndex(columns[0], shiftColumn(columns[i], j));
+      if (mut > 0.05 && mut < 0.07) {
+        offsets.push(j);
+        break;
+      }
+    }
+  }
+  console.log(offsets);
 }
 
 function encryptedToMatrix(gcd) {
@@ -80,4 +92,25 @@ function shiftColumn(column, offset) {
     map.set(alphabet[i], temp[i]);
   }
   return map;
+}
+
+function mutualIndex(fisrt, second) {
+  let sum = 0;
+  let m1 = 0;
+  let m2 = 0;
+
+  let temp1 = [];
+  for (let i = 0; i < alphabet.length; i++) {
+    temp1.push(fisrt.get(alphabet[i]));
+  }
+
+  for (let i = 0; i < alphabet.length; i++) {
+    const elemFirst = fisrt.get(alphabet[i]);
+    const elemSecond = second.get(alphabet[i]);
+    m1 += elemFirst;
+    m2 += elemSecond;
+    sum += elemFirst * elemSecond;
+  }
+
+  return sum / (m1 * m2);
 }
