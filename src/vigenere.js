@@ -1,36 +1,55 @@
 import { readFileSync } from "fs";
 import { question } from "./io.js";
 
-const filepath = "./Шифр Виженера2.txt";
-const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя_";
-const text = readFileSync(filepath, "utf-8").trim().toLowerCase();
+const filepath = "./texts/vigenere.txt";
+const alphabet = "абвгдежзийклмнопрстуфхцчшщъыьэюя_";
+const encrypted = readFileSync(filepath, "utf-8").trim().toLowerCase();
 const columns = [];
 
 export async function decrypt() {
   const gcd = parseInt(await question("Enter GCD: "));
   const matrix = encryptedToMatrix(gcd);
-  const index = indexOfCoincidence(matrix);
+  indexOfCoincidence(matrix);
 
-  const offsets = [];
+  const offsets = [0];
   for (let i = 1; i < columns.length; i++) {
     for (let j = 0; j < alphabet.length; j++) {
       const mut = mutualIndex(columns[0], shiftColumn(columns[i], j));
       if (mut > 0.05 && mut < 0.07) {
-        console.log(`col = ${i}; s = ${j}`);
+        // console.log(`col = ${i}; s = ${j}`);
         offsets.push(j);
+        break;
       }
     }
   }
-  // console.log(offsets);
+  console.log(offsets);
+
+  const keyword = await question("Enter keyword: ");
+
+  const dMatrix = [];
+  for (let i = 0; i < keyword.length; i++) {
+    const index = alphabet.indexOf(keyword[i]);
+    dMatrix.push(alphabet.substring(index) + alphabet.substring(0, index));
+  }
+  console.log(dMatrix);
+
+  let output = "";
+  for (let i = 0; i < encrypted.length / keyword.length; i++) {
+    for (let j = 0; j < keyword.length; j++) {
+      output +=
+        alphabet[dMatrix[j].indexOf(encrypted[i * keyword.length + j])] ?? "";
+    }
+  }
+  console.log(output);
 }
 
 function encryptedToMatrix(gcd) {
-  const rows = Math.ceil(text.length / gcd);
+  const rows = Math.ceil(encrypted.length / gcd);
   const cols = gcd;
 
   const matrix = [];
   for (let i = 0; i < rows; i++) {
-    matrix.push(text.slice(i * cols, i * cols + cols).split(""));
+    matrix.push(encrypted.slice(i * cols, i * cols + cols).split(""));
   }
 
   while (matrix[rows - 1].length < cols) {
